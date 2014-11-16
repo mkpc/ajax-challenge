@@ -3,7 +3,18 @@
 body {
     font-family: 'Ubuntu', 'Helvetica Neue', 'Helvetica', sans-serif;
     font-weight: 400;
+    background-image: url(../img/background.png);
+    color: blanchedalmond;
 }
+
+.row{
+    padding: 1em;
+}
+img{
+    margin: 1em;
+}
+
+
 
 .product-picture {
     float: left;
@@ -11,3 +22,42 @@ body {
     margin-right: 10px;
 }
 
+.cards {
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    padding: 10px;
+    margin-bottom: 0.5em;
+    border: 1px solid #CCC;
+    background-color: #EEE;
+    border-radius: 5px;
+    clear: both;
+}
+
+.card .name,
+.card .title,
+.card p {
+    margin-top: 0;
+    margin-bottom: 0.25em;
+    color:black;
+}
+
+.card h2{
+    color: black;
+}
+
+
+.card.delete{
+    text-decoration: line-through;
+    color:black;
+
+}
+
+.card .remove{
+    color:red;
+}
+.card .rate {
+    font-size: 125%;
+}

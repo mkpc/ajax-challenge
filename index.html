@@ -1,24 +1,100 @@
 <!doctype html>
 <html>
-    <head>
+    <head lang="en">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Product Comments</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="css/main.css">
+
     </head>
     <body>
-
-        <main class="container">
+        <main class="container-fluid" ng-app="AjaxChallenge" ng-controller="CommentsCtrl">
             <section>
-                <img src="img/super-bass-o-matic-76.jpg" alt="product picture" class="product-picture">
                 <h1>The Super Bass-o-Matic '76</h1>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia cumque deserunt ullam repudiandae nisi corporis! Ipsum, ducimus commodi, itaque porro distinctio consequuntur! Autem doloremque numquam nemo ex nulla tempora quis! Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde nihil doloribus excepturi quisquam error possimus veritatis facere, commodi cumque ab atque dolore ducimus obcaecati ipsa, impedit! Consequuntur, eligendi iure cumque!</p>
+
+                <div class="row">
+                    <div class="col-ml-6">
+                        <img src="img/super-bass-o-matic-76.jpg" alt="product picture" class="product-picture">
+
+                        <div ng-controller="OverallRatingCtrl">
+                            <h4>Overall rating</h4>
+                            <rating  ng-model="rate" max="5"  readonly="isReadonly"></rating>
+
+                            <span class="label" ng-class="{'label-warning': percent<30, 'label-info': percent>=30 && percent<70,
+                     'label-success': percent>=70}" ng-show= true>{{percent}}%</span> {{ totalreview }} {{0==totalreview ? 'review' : 1==totalreview ? ' review' : ' reviews'}}
+                        </div>
+                        <hr/>
+
+                    </div>
+
+                    <div class="col-ml-6">
+                        <h4>Product Description:</h4>
+
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia cumque deserunt ullam
+                            repudiandae nisi corporis! Ipsum, ducimus commodi, itaque porro distinctio consequuntur!
+                            Autem doloremque numquam nemo ex nulla tempora quis! Lorem ipsum dolor sit amet,
+                            consectetur adipisicing elit. Unde nihil doloribus excepturi quisquam error possimus
+                            veritatis facere, commodi cumque ab atque dolore ducimus obcaecati ipsa, impedit!
+                            Consequuntur, eligendi iure cumque!</p>
+                    </div>
+                </div>
             </section>
 
             <section>
-                <h2>Add a Comment</h2>
-                <!--  
+
+                <form id="commentInput" class="form-horizontal" role="form" ng-submit="addComment()">
+
+                <div class="form-group">
+
+                    <label for="Comment-title" class="col-sm-2 control-label">Comment Title:</label>
+                    <div class="col-sm-5">
+                        <input type="text" id="Comment-title" class="form-control"
+                           placeholder="title of new comment" ng-model="newComment.title"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                     <label for="Comment-body" class="col-sm-2 control-label">Comment:</label>
+                    <div class="col-sm-5">
+                     <textarea row="4" type="text" id="Comment-body" class="form-control"
+                               placeholder="Write your review here" ng-model="newComment.body">
+                        </textarea>
+                        </div>
+                </div>
+
+                <div class="form-group">
+                    <!--Name input-->
+                    <label for="Comment-name" class="col-sm-2 control-label">Name:</label>
+                    <div class="col-sm-3">
+                        <input type="text" id="Comment-name" class="form-control"
+                                   placeholder="Name" ng-model="newComment.name">
+                    </div>
+
+                    <!--Rating select-->
+                    <div class="col-sm-2">
+                        Rating:
+                        <div>
+                            <rating max="5" ng-model="newComment.rate">
+                        </div>
+                    </div>
+                </div>
+
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-primary" ng-disabled="inserting">Add a Comment</button>
+                            <img src="img/ajax-spinner.gif" alt="loading animation" ng-if="inserting"/>
+                        </div>
+                    </div>
+                    <hr>
+                </form>
+
+            </section>
+
+
+
+                    <!--
                 put a form here for entering a new comment
                 the user must select a rating, and enter a name, title, and comment body
                 before the comment can be saved to the server
@@ -26,17 +102,48 @@
                 http://angular-ui.github.io/bootstrap/#/rating
                 their script file is included below
                 -->
-            </section>
+
 
             <section>
-                <h2>Comments</h2>
+
+                    <h2 class="text-center">{{0==comments.length?'No comments yet. Be the first to review this!':(1==comments.length ? 'Comment' : 'Comments')}}
+                        <button class="btn btn-info btn-xs" ng-click="refreshComments()">Refresh</button></h2>
                 <!-- 
                 display existing comments here
                 each comment should also have UI allowing the user to vote up/down the comment
                 as well as delete it
                  -->
-            </section>
+                <ul class="cards">
+                    <li class="card" ng-repeat="comment in comments  | orderBy : '-scores'"
+                        ng-class="{delete: comment.delete}" >
 
+                        <div class="details">
+
+                                <h2 class="pull-right" >
+                                    {{ comment.scores || 0}}
+                                    <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementScores(comment,1)"></span>
+                                    <span class="glyphicon glyphicon-thumbs-down" ng-click="incrementScores(comment,-1)"></span>
+                                </h2>
+
+
+                            <h2 class="title" > {{comment.title}}</h2>
+
+                            <p class="name">  by {{comment.name}}</p>
+
+                            <p class="rate"> <rating max="5" ng-model="comment.rate"
+                                                     ng-change="updateComment(comment)" readonly="true"></rating></p>
+
+                            <p class="body">{{comment.body}}</p>
+
+                            <p class="remove"><input type="checkbox" ng-model="comment.delete"
+                                                     ng-change="updateComment(comment)"/> Remove comment
+                            </p>
+
+                        </div>
+
+                    </li>
+                </ul>
+            </section>
         </main>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
