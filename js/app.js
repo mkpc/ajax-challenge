@@ -85,7 +85,7 @@ angular.module('AjaxChallenge')
         var rate;
         var total=0;
 
-        $http.get(tasksUrl + '?where={"delete":false}')
+        $http.get(tasksUrl)
             .success(function(data) {
 
                 index = data.results.length;
