@@ -6,19 +6,18 @@
 
 var tasksUrl ='https://api.parse.com/1/classes/comments';
 
-angular.module('AjaxChallenge', ['ui.bootstrap'])
+angular.module('AjaxChallenge', ["ui.bootstrap"])
 
     .config(function($httpProvider){
         $httpProvider.defaults.headers.common['X-Parse-Application-Id'] = 'XkQ1aODXugcEHelVRTH2ZZFh7uebqUgpncKBTAws';
         $httpProvider.defaults.headers.common['X-Parse-REST-API-Key'] = 'is7AwTLezCg71ypLQsRkYInAnfHnWZzhn2n5cRyx';
     })
-    .controller('CommentsCtrl',function($scope,$http){
-
-        $scope.refreshComments = function() {
+    .controller('CommentsCtrl', function($scope,$http){
+        $scope.refreshComments = function(){
             $http.get(tasksUrl + '?where={"delete":false}')
                 .success(function(data) {
                     $scope.comments = data.results;
-                    $scope.totalreview = data.results.length;
+                    //$scope.totalreview = data.results.length;
                 });
         };
 
@@ -28,51 +27,49 @@ angular.module('AjaxChallenge', ['ui.bootstrap'])
 
         $scope.addComment = function() {
             $scope.inserting = true;
-            $http.post(tasksUrl, $scope.newComment)
-                .success(function (responseData) {
+            $http.post(tasksUrl,$scope.newComment)
+                .success(function(responseData){
                     $scope.newComment.objectId = responseData.objectId;
                     $scope.comments.push($scope.newComment);
-                    $scope.newComment = {delete: false};
-                    $scope.newComment = {score: 0};
+                    $scope.newComment = {delete : false};
+                })
+                .finally(function(){
+                    $scope.inserting = false;
+                })
+        };
+        $scope.updateComment = function(comment){
+            $http.put(tasksUrl + '/' + comment.objectId, comment)
+                .success(function(){
+                        //do sth
                 })
 
-                .finally(function () {
-                    $scope.inserting = false;
-                });
-        };
-            $scope.updateComment = function(comment){
-                $http.put(tasksUrl + '/' + comment.objectId, comment)
-                    .success(function(){
-                        //do sth
-                    })
-
         };
 
-        $scope.incrementScores = function(comment,amount){
-
-
-            if((comment.scores >= 0 && amount == 1)||(comment.scores >=1 && amount == -1)){
-                var postData ={
-                    scores:{
+        $scope.incrementScores = function(comment,amount) {
+            if ((comment.scores >= 0 && amount == 1) || (comment.scores >= 1 && amount == -1)) {
+                var postData = {
+                    scores: {
                         __op: "Increment",
                         amount: amount
                     }
                 };
+
+
+                $scope.updating = true;
+                $http.put(tasksUrl + '/' + comment.objectId, postData)
+                    .success(function (respData) {
+
+                        comment.scores = respData.scores;
+
+                    })
+                    .error(function (err) {
+                        console.log(err);
+                    })
+                    .finally(function () {
+                        $scope.updating = false;
+                    })
             }
-
-            $scope.updating = true;
-            $http.put(tasksUrl + '/' +comment.objectId,postData)
-                .success(function(respData){
-                    comment.scores = respData.scores;
-                })
-                .error(function(err){
-                    console.log(err);
-                })
-                .finally(function(){
-                    $scope.updating =false;
-                })
         }
-
      });
 
 angular.module('AjaxChallenge')
