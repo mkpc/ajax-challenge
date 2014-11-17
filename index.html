@@ -19,7 +19,7 @@
 
                         <div ng-controller="OverallRatingCtrl">
                             <h4>Overall rating</h4>
-                            <rating  ng-model="rate" max="5"  readonly="isReadonly"></rating>
+                            <rating  ng-model="rate" max="5"  readonly=true></rating>
 
                             <span class="label" ng-class="{'label-warning': percent<30, 'label-info': percent>=30 && percent<70,
                      'label-success': percent>=70}" ng-show= true>{{percent}}%</span> {{ totalreview }} {{0==totalreview ? 'review' : 1==totalreview ? ' review' : ' reviews'}}
@@ -114,15 +114,15 @@
                 as well as delete it
                  -->
                 <ul class="cards">
-                    <li class="card" ng-repeat="comment in comments  | orderBy : '-scores'"
-                        ng-class="{delete: comment.delete}" >
+                    <li class="card" ng-repeat="comment in comments| orderBy : '-scores'">
+                        <!--ng-class="{delete: comment.delete}"-->
 
                         <div class="details">
 
                                 <h2 class="pull-right" >
                                     {{ comment.scores || 0}}
-                                    <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementScores(comment,1)"></span>
-                                    <span class="glyphicon glyphicon-thumbs-down" ng-click="incrementScores(comment,-1)"></span>
+                                    <span class="glyphicon glyphicon-thumbs-up" ng-disabled="inserting"  ng-click="incrementScores(comment,1)"></span>
+                                    <span class="glyphicon glyphicon-thumbs-down" ng-disabled="inserting" ng-click="incrementScores(comment,-1)"></span>
                                 </h2>
 
 
@@ -135,8 +135,12 @@
 
                             <p class="body">{{comment.body}}</p>
 
-                            <p class="remove"><input type="checkbox" ng-model="comment.delete"
-                                                     ng-change="updateComment(comment)"/> Remove comment
+                            <!--<p class="remove"><input type="checkbox" ng-model="comment.delete"-->
+                                                     <!--ng-change="updateComment(comment)"/> Remove comment-->
+                            <!--</p>-->
+
+                            <p class="remove">
+                                <button class="btn btn-danger btn-xs" ng-click="deleteComment(comment)">Delete</button>
                             </p>
 
                         </div>

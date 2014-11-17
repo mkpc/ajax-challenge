@@ -14,7 +14,7 @@ img{
     margin: 1em;
 }
 
-
+.glyphicon{ cursor: pointer; }
 
 .product-picture {
     float: left;

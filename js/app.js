@@ -14,7 +14,7 @@ angular.module('AjaxChallenge', ["ui.bootstrap"])
     })
     .controller('CommentsCtrl', function($scope,$http){
         $scope.refreshComments = function(){
-            $http.get(tasksUrl + '?where={"delete":false}')
+            $http.get(tasksUrl)
                 .success(function(data) {
                     $scope.comments = data.results;
                     $scope.totalreview = data.results.length;
@@ -23,19 +23,15 @@ angular.module('AjaxChallenge', ["ui.bootstrap"])
 
         $scope.refreshComments();
 
-        $scope.newComment = {delete : false};
-
-        $scope.newComment.scores = 0 ;
+        $scope.newComment={scores : 0} ;
 
         $scope.addComment = function() {
             $scope.inserting = true;
             $http.post(tasksUrl,$scope.newComment)
                 .success(function(responseData){
                     $scope.newComment.objectId = responseData.objectId;
-                    $scope.newComment.scores = 0;
                     $scope.comments.push($scope.newComment);
-                    $scope.newComment = {delete : false};
-
+                    $scope.newComment = {scores : 0};
                 })
                 .finally(function(){
                     $scope.inserting = false;
@@ -43,11 +39,14 @@ angular.module('AjaxChallenge', ["ui.bootstrap"])
         };
         $scope.updateComment = function(comment){
             $http.put(tasksUrl + '/' + comment.objectId, comment)
-                .success(function(){
-                        //do sth
-                })
-
         };
+
+        $scope.deleteComment = function(comment){
+            console.log("mn");
+            $http.delete(tasksUrl + '/' +comment.objectId)
+        };
+
+
 
         $scope.incrementScores = function(comment,amount) {
 
