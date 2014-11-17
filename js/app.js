@@ -46,9 +46,9 @@ angular.module('AjaxChallenge', ["ui.bootstrap"])
         };
 
         $scope.incrementScores = function(comment,amount) {
-            var score = comment.scores;
+            
 
-            if (((score == null || score >= 0) && amount == 1) || score >= 1){
+            if (((comment.scores == null || comment.scores >= 0) && amount == 1) || comment.scores >= 1){
 
                 var postData = {
                     scores: {
