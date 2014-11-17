@@ -17,7 +17,7 @@ angular.module('AjaxChallenge', ["ui.bootstrap"])
             $http.get(tasksUrl + '?where={"delete":false}')
                 .success(function(data) {
                     $scope.comments = data.results;
-                    //$scope.totalreview = data.results.length;
+                    $scope.totalreview = data.results.length;
                 });
         };
 
@@ -46,19 +46,19 @@ angular.module('AjaxChallenge', ["ui.bootstrap"])
         };
 
         $scope.incrementScores = function(comment,amount) {
-            if ((comment.scores >= 0 && amount == 1) || (comment.scores >= 1 && amount == -1)) {
+            var score = comment.scores;
+
+            if (((score == null || score >= 0) && amount == 1) || score >= 1){
+
                 var postData = {
                     scores: {
                         __op: "Increment",
                         amount: amount
                     }
                 };
-
-
                 $scope.updating = true;
                 $http.put(tasksUrl + '/' + comment.objectId, postData)
                     .success(function (respData) {
-
                         comment.scores = respData.scores;
 
                     })
@@ -79,6 +79,7 @@ angular.module('AjaxChallenge')
         $scope.isReadonly = true;
 
         var index;
+        var rate;
         var total=0;
 
         $http.get(tasksUrl + '?where={"delete":false}')
@@ -86,18 +87,23 @@ angular.module('AjaxChallenge')
 
                 index = data.results.length;
 
-
                 for(var i=0;i<index;i++){
-                    total += parseFloat(data.results[i].rate);
 
+                    rate = data.results[i].rate;
+                    if(isNaN(rate)){
+                        rate = 0;
+                    }
+                    total += parseInt(rate);
+                    //console.log("ha")
                 }
 
                 if(total == 0 || isNaN(total)){
+                    console.log("ha")
                     $scope.percent = 0;
                     $scope.rate = 0;
                 }else{
-                    $scope.percent = 100 * total/(index*5);
-                    $scope.rate=($scope.percent/100)*5;
+                    $scope.percent = parseInt(100 * total/(index*5));
+                    $scope.rate=parseInt(($scope.percent/100)*5);
                 }
             });
 
