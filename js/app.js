@@ -46,7 +46,7 @@ angular.module('AjaxChallenge', ["ui.bootstrap"])
         };
 
         $scope.incrementScores = function(comment,amount) {
-            
+
 
             if (((comment.scores == null || comment.scores >= 0) && amount == 1) || comment.scores >= 1){
 
@@ -94,11 +94,9 @@ angular.module('AjaxChallenge')
                         rate = 0;
                     }
                     total += parseInt(rate);
-                    //console.log("ha")
                 }
 
                 if(total == 0 || isNaN(total)){
-                    console.log("ha")
                     $scope.percent = 0;
                     $scope.rate = 0;
                 }else{
