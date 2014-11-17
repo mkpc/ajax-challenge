@@ -24,6 +24,7 @@ angular.module('AjaxChallenge', ["ui.bootstrap"])
         $scope.refreshComments();
 
         $scope.newComment = {delete : false};
+        $scope.newComment = {scores : 0 };
 
         $scope.addComment = function() {
             $scope.inserting = true;
@@ -32,6 +33,7 @@ angular.module('AjaxChallenge', ["ui.bootstrap"])
                     $scope.newComment.objectId = responseData.objectId;
                     $scope.comments.push($scope.newComment);
                     $scope.newComment = {delete : false};
+                    $scope.newComment = {scores : 0 };
                 })
                 .finally(function(){
                     $scope.inserting = false;
