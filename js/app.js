@@ -24,16 +24,18 @@ angular.module('AjaxChallenge', ["ui.bootstrap"])
         $scope.refreshComments();
 
         $scope.newComment = {delete : false};
-        $scope.newComment = {scores : 0 };
+
+        $scope.newComment.scores = 0 ;
 
         $scope.addComment = function() {
             $scope.inserting = true;
             $http.post(tasksUrl,$scope.newComment)
                 .success(function(responseData){
                     $scope.newComment.objectId = responseData.objectId;
+                    $scope.newComment.scores = 0;
                     $scope.comments.push($scope.newComment);
                     $scope.newComment = {delete : false};
-                    $scope.newComment = {scores : 0 };
+
                 })
                 .finally(function(){
                     $scope.inserting = false;
